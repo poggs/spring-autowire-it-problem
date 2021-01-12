@@ -3,11 +3,16 @@ Spring @Autowire problem with integration tests
 
 This is a minimal project which has a single component, `ExampleComponent`, along with an integration test named `ExampleComponentIT`.
 
-When executing the integration test using `mvn verify`, it fails with the following error:
+The `showBeans` test method will dump the beans found.  When run with `mvn verify`, it will output:
 
 ```
-org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'com.example.ExampleComponentIT': Unsatisfied dependency expressed through field 'exampleComponent'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.example.ExampleComponent' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
-Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.example.ExampleComponent' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+org.springframework.context.annotation.internalConfigurationAnnotationProcessor
+org.springframework.context.annotation.internalAutowiredAnnotationProcessor
+org.springframework.context.event.internalEventListenerProcessor
+org.springframework.context.event.internalEventListenerFactory
+integrationTestContext
 ```
 
-Running the same integration test from within IntelliJ IDEA works successfully.
+It will then fail as `ExampleComponent` has been annotated with `@Autowired(required = false)` and `exampleComponentTest` tests that `exampleComponent` is not null.
+
+It will not find the `ExampleComponent`.   Running `ExampleComponentIT` from within IntelliJ IDEA will find the `exampleComponent` bean.
